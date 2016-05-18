@@ -56,7 +56,7 @@ class Console(object):
                                         # Returns answer
         command_name, is_cmd = self.check_if_cmd(answer)
         if is_cmd:
-            self.run_command(command_name)
+            return self.run_command(command_name)
         else:
             return answer
 
@@ -73,20 +73,22 @@ class Console(object):
         return answer, False
 
     def console_int(self, answer, data_type, answer_range=None, range_dict=None):  # Check if answer in range
-        def check_if_int():
+        def check_if_should_be_int():
             if data_type is "number":
                 print "It should be a number!"
-                while True:
-                    try:
-                        self.console_cmd(answer)
-                        int(answer)
-                    except ValueError:
-                        print("That's either not a whole number or not a number at all! Try again.")
-                        # answer = raw_input(">")
-                    else:
-                        return int(answer), True
+                check_if_int()
             else:
-                return answer, False
+                pass
+
+        def check_if_int():
+            try:
+                self.console_cmd(answer)
+                int(answer)
+            except ValueError:
+                print("That's either not a whole number or not a number at all! Try again.")
+                return False
+            else:
+                return True
 
         def check_if_in_range(int_answer):
             if int_answer in answer_range:

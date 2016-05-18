@@ -31,8 +31,10 @@ class Appearance(object):
 
     c_number = "number"
     c_list = "list"
-    help_cmds = {
+    command_texts = {
         "help": ["help", "?", "halp"],
+        "change": ["change", "rename", "modify"],
+        "repeat": ["repeat", "instruction"]
     }
 
     def help_command(self, data_type, list_name=None):
@@ -46,14 +48,40 @@ class Appearance(object):
         answer = raw_input(">")
         return answer
 
+    def console_cmd(self, answer):
+        command_name, is_cmd = self.check_if_cmd(answer)
+        if is_cmd:
+            return self.run_command(command_name)
+        else:
+            return answer
+
+    def run_command(self, command_name, *arg, **kwargs):
+        print "A %s will be run. Eventually." % command_name
+        self.commands[command_name](*arg, **kwargs)
+        answer = raw_input(">")
+        return answer
+
+    def check_if_cmd(self, answer):
+        for command_name, v in self.command_texts.iteritems():
+            values = v
+            if answer in values:
+                print "It's a command"
+                return command_name, True
+            else:
+                pass
+        print "Not a command"
+        return answer, False
+
+
 # needs moving, change, deletion
     def console(self, data_type=None, list_name=None):
         answer = raw_input(">")
         if data_type is "list":
             while True:
-                if answer in self.help_cmds:
-                    answer = self.help_command(data_type, list_name)
-                elif answer in list_name:
+                self.console_cmd()
+                # if answer in self.help_cmds:
+                #     self.help_command(data_type, list_name)
+                if answer in list_name:
                     return answer
                 else:
                     print "Sorry, your answer is not valid. Please try again or type '?' for help"
@@ -74,6 +102,9 @@ class Appearance(object):
                     self.help_command(data_type)
                 else:
                     return answer
+
+    def change_command(self):
+        pass
 
     """ AGE methods """
 
@@ -136,8 +167,8 @@ class Appearance(object):
         return name
 
     def height(self):
-        print "We're getting to appearance now.\n"
-        print "How would you describe %s height?" % self.char_pronoun[2]
+        print "We're getting to appearane now.\n"
+        print "What is your height?"
         height = self.console("list", self.height_list)
         self.char_appearance["height"] = height
         print "Got it."
@@ -155,6 +186,11 @@ class Appearance(object):
         self.height()
         self.build()
 
+
+    commands = {
+        "help": help_command,
+        "change": change_command
+    }
 a = Appearance()
 # a.console("Text to print")
 a.appearance()
@@ -162,7 +198,7 @@ print "Here is the character you created:"
 print "Name: %s" % a.char_appearance["name"]
 print "Gender: %s" % a.char_appearance["gender"]
 print "Age: %s, %s" % (a.char_appearance["age"], a.char_appearance["stage"])
-print "Build and height: %s is %s and of %s build" % (str(a.char_pronoun[0]), a.char_appearance["height"], a.char_appearance["build"])
+print "Build and height: %s is %s and of %s build" % ((str(a.char_pronoun[0])).title, a.char_appearance["height"], a.char_appearance["build"])
 
 print a.char_appearance
 print a.char_pronoun
