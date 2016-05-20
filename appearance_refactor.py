@@ -1,6 +1,14 @@
 import abc
 
 
+class ValidationError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
 class Console(object):
     def __int__(self):
         pass
@@ -13,19 +21,10 @@ class Console(object):
     def get_answer():
         return raw_input(">")
 
-
-class Validator(object):
-    def validate(self, answer):
-        if answer == 'dupa':
-            return True
-        return False
-
 console = Console()
 
 
-
-
-class ConsoleParamReader(object):
+class ParamReader(object):
 
     __metaclass__ = abc.ABCMeta
 
@@ -33,15 +32,41 @@ class ConsoleParamReader(object):
         pass
 
     @abc.abstractmethod
-    def validate(self, answer):
+    def get_param_name(self):
         return
 
     @abc.abstractmethod
-    def get_param(self, answer):
+    def get_param_value(self, answer):
         return
 
 
-class AgeParamReader(ConsoleParamReader):
+class NameReader(ParamReader):
+    def __init__(self):
+        pass
+
+    def get_param_name(self):
+        return "name"
+
+    def get_param_value(self, answer):
+        console.display("Ok, so let's get on with it! We'll start with %s's Appearance, than go through\nPersonality, and finish with some kind of Background.\n" % answer)
+        return answer
+
+
+class GenderReader(ParamReader):
+    def __init__(self):
+        self.gender_list = ['male', 'female']
+
+    def get_param_name(self):
+        return "gender"
+
+    def get_param_value(self, answer):
+        if answer in self.gender_list:
+            return answer
+        else:
+            raise ValidationError("You answer is not valid. It should be one of %r" % self.gender_list)
+
+
+class AgeReader(ParamReader):
     def __init__(self):
         self.age_stages = {
             "a kid": range(5, 11),
@@ -52,32 +77,37 @@ class AgeParamReader(ConsoleParamReader):
             "elderly": range(66, 121)
         }
 
-    def validate(self, answer):
+    def get_param_name(self):
+        return "age"
+
+    def get_param_value(self, answer):
         try:
             age = int(answer)
         except ValueError:
-            return False
-        else:
-            if age in range(5, 121):
-                stage = self.get_range(age, self.age_stages)
-                console.display("So, your character is a %s years old. That would make %s %s." \
-                      % (age, self.char_pronoun[1], stage))
-                return age, stage
-            elif 0 >= age:
-                print "Come on. A positive number, please?"
-            elif 5 > age:
-                print "Come on. You want a full character creation for a %r year old?\n" \
-                      "Well, not in this creator." % age
-            else:
-                print "Come on, %r? Humans don't live that long... yet.\n" \
-                      "And it's a human character generator." % age
+            raise ValidationError('Age must be int')
 
-    def get_param(self, answer):
-        return int(answer)
+        if age in range(5, 121):
+            stage = self.__get_range(age)
+            console.display("So, your character is a %s years old. That would make %s %s." % (age, self.char_pronoun[1], stage))
+            return age, stage
+        elif 0 >= age:
+            raise ValidationError("Come on. A positive number, please?")
+        elif 5 > age:
+            raise ValidationError("Come on. You want a full character creation for a %r year old?\n" \
+                                  "Well, not in this creator." % age)
+        else:
+            raise ValidationError("Come on, %r? Humans don't live that long... yet.\n" \
+                                  "And it's a human character generator." % age)
+
+    def __get_range(self, age):
+        for range_name, range_value in self.age_stages.iteritems():
+            if age in range_value:
+                return range_name
+        raise ValidationError("Something, somwhere went awfully wrong. Sorry. %r not a value I can take." % age)
 
 
 class Question(object):
-    def __init__(self, main_question, correction_question, param_reader):
+    def __init__(self, param_reader, main_question, correction_question=None):
         self.main_question = main_question
         self.correction_question = correction_question
         self.param_reader = param_reader
@@ -85,23 +115,25 @@ class Question(object):
     def ask(self):
         console.display(self.main_question)
         while True:
-            answer = console.get_answer()
-            if self.param_reader.validate(answer):
-                param = self.param_reader.get_param(answer)
-                console.display(param)
-                return answer
-            else:
-                console.display(self.correction_question)
+            try:
+                answer = console.get_answer()
+                return self.param_reader.get_param_name(), self.param_reader.get_param_value(answer)
+            except ValidationError as e:
+                console.display(e.message)
+                if self.correction_question:
+                    console.display(self.correction_question)
 
 
+result = {}
 
-v = Validator()
-
-q1 = Question("What is your name", "Are you sure?", v)
-q2 = Question("What is your age", "Wrong age?", v)
-
-questions = [q1, q2]
+questions = [
+    Question(NameReader(), "First of all name your character"),
+    Question(AgeReader(), "What is your age", "Wrong age?"),
+    Question(GenderReader(), "Ok, what is %s's gender?", "Are you sure?"),
+]
 
 for q in questions:
-    q.ask()
+    param_name, param_value = q.ask()
+    result[param_name] = param_value
 
+print result
