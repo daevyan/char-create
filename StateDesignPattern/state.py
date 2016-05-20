@@ -1,5 +1,6 @@
 from console import *
 
+
 class State(object):
     pass
 

@@ -12,4 +12,18 @@ class Console(object):
         self.correct_answer = CorrectAnswer(Console)
         self.state = self.question_asked
 
-    pass
+    def get_answer(self):
+        return raw_input(">")
+
+    def display_text(self, text):
+        print text
+
+# class Engine(object):
+#     def __init__(self, current_question, next_question):
+#         self.current_question = current_question
+#         self.next_question = next_question
+#
+#     def start(self):
+#         current_question = start_question
+
+
