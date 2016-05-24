@@ -161,7 +161,7 @@ class Appearance(object):
     def name(self):
         print "First of all name your character."
         name = raw_input(">")
-        print "Ok, so let's get on with it! We'll start with %s's Appearance, than go through\n" \
+        print "Ok, so let's get on with it! We'll start with %s's Looks, than go through\n" \
               "Personality, and finish with some kind of Background.\n" % name
         self.char_appearance["name"] = name
         return name
