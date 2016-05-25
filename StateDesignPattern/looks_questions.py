@@ -5,6 +5,12 @@ from validator import *
 
 class Looks(object):
 
+    """ -------------------- Lists --------------------"""
+
+    gender_list = ["male", "female"]
+
+    """ -------------------- Questions --------------------"""
+
     appearance_questions = [
         Question("name", "Let's start with naming your character:",
                  "Ok, so let's get on with it! We'll start with %s's Looks, than go through\n"
@@ -12,17 +18,17 @@ class Looks(object):
                  "Error, try again",
                  EmptyValidator()
                  ),
+        Question("gender", "Ok, what is %s's gender?" % Answer().char_appearance.get("name"),
+                 "Ah, a %s, OK." % Answer().char_appearance.get("gender"),
+                 "Error, try again",
+                 GenderValidator(gender_list),
+                 ),
         Question("age", "And how old is your character?",
                  "So, your character is a %s years old." % Answer().char_appearance.get("age"),
                  "Error, try again",
                  AgeValidator()
-                 ),
-
-        Question("gender", "Ok, what is %s's gender?" % Answer().char_appearance.get("name"),
-                 "Ah, a %s, OK." % Answer().char_appearance.get("gender"),
-                 "Error, try again",
-                 ListValidator()
                  )
+
     ]
 
     def get_range(self, value, range_dict):

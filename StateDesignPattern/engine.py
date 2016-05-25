@@ -17,8 +17,11 @@ class Engine(object):
     def start(self):
         for question in self.question_list:
             question_value = question.ask_question()
+            print "At start of question: %s, dict looks like this: %s." % (question.question_name, self.answers.char_appearance)
             self.answers.set_answer(question.question_name, question_value)
+            print "At the end of question: %s, dict looks like this: %s." % (question.question_name, self.answers.char_appearance)
         print "Start method end point: %s" % self.answers.char_appearance
+        print "Char pronoun: %s" % self.answers.char_pronoun
 
 
 

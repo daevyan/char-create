@@ -13,13 +13,16 @@ class Validator(object):
 
 class IntValidator(Validator):
     def validate(self, value):
-        try:
-            int_value = int(value)
-        except ValueError:
-            print("That's either not a whole number or not a number at all! Try again.")
-            return False
+        if EmptyValidator().validate(value):
+            try:
+                int_value = int(value)
+            except ValueError:
+                print("That's either not a whole number or not a number at all! Try again.")
+                return False, value  # mby should be False, value
+            else:
+                return True, int_value
         else:
-            return True
+            return False, value
 
 
 class EmptyValidator(Validator):
@@ -33,12 +36,42 @@ class EmptyValidator(Validator):
 
 
 class ListValidator(Validator):
-    def validate(self, value, list_name):
-        if value in list_name:
-            print "Value available in list!"
+    def __init__(self, list_name):
+        super(ListValidator, self).__init__()
+        self.list_name = list_name
+
+    def validate(self, value):
+        if EmptyValidator().validate(value):
+            if value in self.list_name:
+                print "Value available in list!"
+                return True
+            else:
+                print "Value not in list!"
+                return False
+
+
+class GenderValidator(Validator):
+    def __init__(self, list_name):
+        super(GenderValidator, self).__init__()
+        self.list_name = list_name
+
+    def get_gender_pronoun(self, answer):
+        if answer == 'male':
+            pronoun = ["he", "him", "his"]
+        elif answer == 'female':
+            pronoun = ["she", "her", "hers"]
+        else:
+            pronoun = None
+            print "Cannot set pronoun"
+        return pronoun
+
+    """This is not exactly a validator only, but also an additional parameter setter."""
+    def validate(self, value):
+        if ListValidator(self.list_name).validate(value):
+            gender_pronoun = self.get_gender_pronoun(value)  # set gender pronoun
+            self.answer.set_gender_pronoun(gender_pronoun)
             return True
         else:
-            print "Value not in list!"
             return False
 
 
@@ -57,35 +90,29 @@ class AgeValidator(Validator):
         for range_name, range_value in range_dict.iteritems():
             if value in range_value:
                 return range_name
-            else:
-                self.console.display_text("Something, somwhere went awfully wrong. Sorry. %r not a value I can take."
-                                          % value)
-                return False
+        else:
+            self.console.display_text("Something, somewhere went awfully wrong. Sorry. %r not a value I can take."
+                                      % value)
+            return False
 
     def validate(self, age):
-        if IntValidator().validate:
+        logic_value, age = IntValidator().validate(age)
+        if logic_value:
             if age in range(5, 121):
                 stage = self.get_range(age, self.age_stages)
-                self.console.display_text("So, your character is a %s years old. That would make %s %s." \
-                      % (age, self.answer.char_pronoun[1], stage))
+                self.console.display_text("So, your character is a %s years old. That would meaning that it's %s."
+                                          % (age, stage))
                 return age, stage
             elif 0 >= age:
                 self.console.display_text("Come on. A positive number, please?")
             elif 5 > age:
-                self.console.display_text("Come on. You want a full character creation for a %r year old?\n" \
+                self.console.display_text("Come on. You want a full character creation for a %r year old?\n"
                                           "Well, not in this creator." % age)
             else:
                 self.console.display_text("Come on, %r? Humans don't live that long... yet.\n" \
                                           "And it's a human character generator." % age)
             return False
 
-validators = {
-    'age': AgeValidator(),
-    'name': EmptyValidator(),
-    'gender': ListValidator()
-}
-
-# validators['age'].validate(2234)
 
 
 #
