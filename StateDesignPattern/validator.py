@@ -1,5 +1,6 @@
 from console import Console
 from answer import Answer
+from commands import Commands
 
 
 class Validator(object):
@@ -27,10 +28,12 @@ class IntValidator(Validator):
 
 class EmptyValidator(Validator):
     def validate(self, value):
-        print "Value: %s." % value
         if not value or value is None:
             print "Error! Empty value."
             return False
+        elif CMDValidator().validate(value):
+            print "It's a command, cmd will be run... eventually"
+            return value
         else:
             return True
 
@@ -114,10 +117,30 @@ class AgeValidator(Validator):
             return False
 
 
+class CMDValidator(Validator):
 
-#
+    # command_texts = {
+    #     "change": ["change", "rename", "modify"],
+    #     "check": ["check", "status", "current"],
+    #     "commands": ["commands", "cmd", "cmds"],
+    #     "help": ["help", "?", "halp"],
+    #     "load": ["load"],
+    #     "repeat": ["repeat", "instruction"],
+    #     "restart": ["restart", "reset"],
+    #     "save": ["save"],
+    #     "quit": ["quit"]
+    # }
+    commands = ["change", "check", "commands", "help", "load", "repeat", "restart", "save", "quit"]
+
+    def validate(self, value):
+        if value in self.commands:
+            print "It's a command!"
+            return True
+        else:
+            print "Not a command"
+            return False
+
 # ev = EmptyValidator()
 # v = Console().get_answer()
 # print "Ze value is: %s." % v
 # ev.validate(v)
-#

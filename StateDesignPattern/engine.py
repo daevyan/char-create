@@ -1,4 +1,3 @@
-from question import Question
 from answer import Answer
 from looks_questions import Looks
 
@@ -16,7 +15,7 @@ class Engine(object):
 
     def start(self):
         for question in self.question_list:
-            question_value = question.ask_question()
+            question_value = question.get_answer()
             print "At start of question: %s, dict looks like this: %s." % (question.question_name, self.answers.char_appearance)
             self.answers.set_answer(question.question_name, question_value)
             print "At the end of question: %s, dict looks like this: %s." % (question.question_name, self.answers.char_appearance)
@@ -26,3 +25,6 @@ class Engine(object):
 
 
 Engine().start()
+
+
+
