@@ -1,24 +1,32 @@
+from question import Question
+from validator import *
 from answer import Answer
-from looks_questions import Looks
 
 
 class Engine(object):
 
-    # appearance = Looks()
-    # answers = Answer()
-    # question_list = appearance.appearance_questions
-
     def __init__(self):
         self.answers = Answer()
-        self.appearance = Looks()
-        self.question_list = self.appearance.appearance_questions
+        self.question_list = [
+            Question(self.answers, "name", "Let's start with naming your character:",
+                     "Ok, so let's get on with it! We'll start with %s's Looks, than go through\n"
+                     "Personality, and finish with some kind of Background.\n" % Answer().char_appearance.get("name"),
+                     EmptyValidator()
+                     ),
+            Question(self.answers, "gender", "Ok, what is %s's gender?" % Answer().char_appearance.get("name"),
+                     "Ah, a %s, OK." % Answer().char_appearance.get("gender"),
+                     GenderValidator(),
+                     ),
+            Question(self.answers, "age", "And how old is your character?",
+                     "So, your character is a %s years old." % Answer().char_appearance.get("age"),
+                     AgeValidator()
+                     )
+
+        ]
 
     def start(self):
         for question in self.question_list:
-            question_value = question.get_answer()
-            print "At start of question: %s, dict looks like this: %s." % (question.question_name, self.answers.char_appearance)
-            self.answers.set_answer(question.question_name, question_value)
-            print "At the end of question: %s, dict looks like this: %s." % (question.question_name, self.answers.char_appearance)
+            question.get_answer()
         print "Start method end point: %s" % self.answers.char_appearance
         print "Char pronoun: %s" % self.answers.char_pronoun
 

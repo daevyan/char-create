@@ -4,24 +4,24 @@ from validator import *
 
 
 class Looks(object):
+    def __init__(self):
+        self.answers = Answer()
 
-    """ -------------------- Lists --------------------"""
+    """ -------------------- Lists -------------------- """
 
-    gender_list = ["male", "female"]
-
-    """ -------------------- Questions --------------------"""
+    """ -------------------- Questions -------------------- """
 
     appearance_questions = [
-        Question("name", "Let's start with naming your character:",
+        Question(self.answers, "name", "Let's start with naming your character:",
                  "Ok, so let's get on with it! We'll start with %s's Looks, than go through\n"
                  "Personality, and finish with some kind of Background.\n" % Answer().char_appearance.get("name"),
                  EmptyValidator()
                  ),
-        Question("gender", "Ok, what is %s's gender?" % Answer().char_appearance.get("name"),
+        Question(self.answers, "gender", "Ok, what is %s's gender?" % Answer().char_appearance.get("name"),
                  "Ah, a %s, OK." % Answer().char_appearance.get("gender"),
-                 GenderValidator(gender_list),
+                 GenderValidator(),
                  ),
-        Question("age", "And how old is your character?",
+        Question(self.answers, "age", "And how old is your character?",
                  "So, your character is a %s years old." % Answer().char_appearance.get("age"),
                  AgeValidator()
                  )
