@@ -1,4 +1,3 @@
-from answer import Answer
 from validator import *
 
 
@@ -11,7 +10,6 @@ class Question(object):
         self.answers = answers
         self.list_name = list_name
 
-    # answers = Answer()
     console = Console()
 
     def get_answer(self):
@@ -21,7 +19,6 @@ class Question(object):
                 self.answers.set_answer(self.question_name, answer)
                 break
             else:
-                self.console.display_text("Get answer error!")
                 continue
 
     def ask_question(self):

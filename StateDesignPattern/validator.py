@@ -5,7 +5,6 @@ from console import Console
 
 class Validator(object):
     def __init__(self):
-        # self.answer = Answer()
         self.console = Console()
 
     def validate(self, *params):
@@ -67,10 +66,9 @@ class GenderValidator(Validator):
 
 class AgeValidator(Validator):
 
-   def validate(self, age):
-        logic_value = IntValidator().validate(age)
-        age = int(age)
-        if logic_value:
+    def validate(self, age):
+        if IntValidator().validate(age):
+            age = int(age)
             if age in range(5, 121):
                 self.console.display_text("Confirmation: %s years old.")
                 return True
@@ -82,6 +80,7 @@ class AgeValidator(Validator):
             else:
                 self.console.display_text("Come on, %r? Humans don't live that long... yet.\n"
                                           "And it's a human character generator." % age)
+        else:
             return False
 
 
