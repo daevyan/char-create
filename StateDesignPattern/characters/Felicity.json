@@ -1,0 +1,12 @@
+{
+"gender": "female", 
+"age": "15", 
+"name": "Felicity", 
+"stage": "a teen"
+}{
+"gender_pronoun": [
+"she", 
+"her", 
+"hers"
+]
+}

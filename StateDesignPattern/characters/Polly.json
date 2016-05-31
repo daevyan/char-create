@@ -1,0 +1,11 @@
+{
+    "gender": "female", 
+    "age": "56", 
+    "stage": "middle aged", 
+    "name": "Polly", 
+    "gender_pronoun": [
+        "she", 
+        "her", 
+        "hers"
+    ]
+}

@@ -1,0 +1,5 @@
+Character: Flora
+gender: female
+age: 73
+stage: elderly
+name: Flora

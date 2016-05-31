@@ -1,0 +1,6 @@
+Character: Fiona
+
+gender: female
+age: 27
+name: Fiona
+stage: an adult

@@ -1,0 +1,3 @@
+Character: Dragona
+Summary: 
+ {'gender': 'female', 'age': '64', 'name': 'Dragona', 'stage': 'middle aged'}

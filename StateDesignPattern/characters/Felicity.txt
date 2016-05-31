@@ -1,0 +1,5 @@
+Character: Felicity
+gender: female
+age: 15
+name: Felicity
+stage: a teen

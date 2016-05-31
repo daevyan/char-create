@@ -1,0 +1,2 @@
+{'gender': 'female', 'age': '21', 'name': 'Balbina', 'stage': 'a young adult'}
+['she', 'her', 'hers']

@@ -1,21 +1,18 @@
-# from question import Question
+from console import Console
+import json
+import os
+from pprint import pprint
+
+from engine import Engine
 
 
 class Commands(object):
+    def __init__(self):
+        self.answers = Engine().answers
+        self.console = Console()
 
-    """
-    def check_if_cmd(self, answer):     # Returns answer + True or False.
-                                        # True if answer is a command, False if it is not
-        for command_name, v in self.command_texts.iteritems():
-            values = v
-            if answer in values:
-                print "It's a command"
-                return command_name, True
-            else:
-                pass
-        print "Not a command"
-        return answer, False
-    """
+    path = "C:\Users\Anka\PycharmProjects\CharGen\StateDesignPattern\characters\\"
+
     commands = ["change", "check", "commands", "help", "load", "pass", "repeat", "restart", "save", "quit"]
     command_texts = {
         "change": ["change", "rename", "modify"],   # change an answer to a chosen question
@@ -35,7 +32,66 @@ class Commands(object):
         "empty": ["EmptyValidator"]
     }
 
+
+class SaveCommand(Commands):
+
+    def save(self):
+        self.save_to_text_file()
+        self.save_dict()
+
+    def save_to_text_file(self):
+        file_name = os.path.join(self.path, self.answers.char_answers["name"] + ".txt")
+        text_file = open(file_name, "w")
+
+        text_file.write("Character: %s\n\n" % self.answers.char_answers["name"])
+        for k, v in self.answers.char_answers.iteritems():
+            if k == "gender_pronoun":
+                pass
+            else:
+                text_file.write(k + ": " + v + "\n")
+        text_file.close()
+
+    def save_dict(self):
+        file_name = os.path.join(self.path, self.answers.char_answers["name"] + ".json")
+
+        with open(file_name, "w") as text_file:
+            json.dump(self.answers.char_answers, text_file, indent=4)
+
+
+class LoadCommand(Commands):
+
+    def load(self):
+        self.load_from_file()
+
+    def load_from_file(self):
+        self.console.display_text("Which character do you wish to load?")
+        while True:
+            try:
+                file_name = str(self.path + raw_input(">") + ".json")
+                with open(file_name, 'r') as json_data:
+                    self.answers.char_answers = json.load(json_data)
+            except IOError:
+                self.console.display_text("No such character file exists. Try again.")
+            else:
+                break
+        self.answers.set_gender_pronoun()
+        pprint(self.answers.char_answers)
+        pprint(self.answers.char_gender_pronoun)
+
+
+class HelpCommand(Commands):
+
     def help(self):
+        self.help_command()
+
+    help_list_thing = {
+        "int": "Int help text",
+        "list": "List help text",
+        "other": "Other help text"
+    }
+
+    @staticmethod
+    def help_command():
         print "Running help command... kinda"
 
     #     print "You should write an integer - not text, not a floating number."
@@ -44,24 +100,19 @@ class Commands(object):
     #     print "To access the list of all commands, type 'commands' and press Enter"
     #     return Question().ask_question
 
-        #  print a list of commands
-        #  print help line for given question. Or - depending on the validator?
-        #  if list, print list
+    #  print a list of commands
+    #  print help line for given question. Or - depending on the validator?
+    #  if list, print list
 
-class HelpCommand(Commands):
-    help = {
-        "int": "one",
-        "list": "two",
-        "other": "three"
-    }
 
-    def help_command(self, data_type, list_name=None, question=None):
-        if data_type is "number":
-            print "You should write an integer - not text, not a floating number."
-            print "No fractions. Or whitespaces. An integer. Like '3' or '57'."
-        elif data_type is "list":
-            print "I suggest using values from this list: %s" % ', '.join(list_name)
-        else:
-            print question
-        answer = raw_input(">")
-        return answer
+    # @staticmethod
+    # def help_command_old(data_type, list_name=None, question=None):
+    #     if data_type is "number":
+    #         print "You should write an integer - not text, not a floating number."
+    #         print "No fractions. Or whitespaces. An integer. Like '3' or '57'."
+    #     elif data_type is "list":
+    #         print "I suggest using values from this list: %s" % ', '.join(list_name)
+    #     else:
+    #         print question
+    #     answer = raw_input(">")
+    #     return answer

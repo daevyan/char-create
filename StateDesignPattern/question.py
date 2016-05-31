@@ -1,3 +1,5 @@
+import abc
+
 from validator import *
 
 
@@ -25,12 +27,6 @@ class Question(object):
         self.console.display_text(self.question_text)
         answer = self.console.get_answer()
         return answer
-
-# def __str__(self):
-#     return "Q(q=%s, c=%s, e=%s, v=%s)" % (self.question_text,  self.confirmation_text, self.error_text, self.validator)
-#
-# def __repr__(self):
-#     return self.__str__()
 
 
 
