@@ -2,14 +2,26 @@ from console import Console
 import json
 import os
 from pprint import pprint
+import abc
 
 
 class Commands(object):
+    PATH = "C:\Users\Anka\PycharmProjects\CharGen\StateDesignPattern\characters\\"
+
     def __init__(self, answers):
         self.answers = answers
         self.console = Console()
-
-    path = "C:\Users\Anka\PycharmProjects\CharGen\StateDesignPattern\characters\\"
+        self.commands = {
+            # "change": ChangeCommand(),
+            # "check": CheckCommand(),
+            # "commands": CommandsList(),
+            "help": HelpCommand(answers),
+            "load": LoadCommand(answers, self.PATH),
+            # "repeat": RepeatCommand(),
+            # "restart": RestartCommand(),
+            "save": SaveCommand(answers, self.PATH),
+            # "quit": QuitCommand()
+        }
 
     commands_list = ["change", "check", "commands", "help", "load", "pass", "repeat", "restart", "save", "quit"]
     command_texts = {
@@ -29,20 +41,12 @@ class Commands(object):
         "list": ["ListValidator", "GenderValidator"],
         "empty": ["EmptyValidator"]
     }
-    commands = {
-        # "change": ChangeCommand(),
-        # "check": CheckCommand(),
-        # "commands": CommandsList(),
-        "help": HelpCommand(),
-        "load": LoadCommand(),
-        # "repeat": RepeatCommand(),
-        # "restart": RestartCommand(),
-        "save": SaveCommand(),
-        # "quit": QuitCommand()
-    }
 
     def execute(self):
         pass
+
+    def is_command(self, value):
+        return value in self.commands_list
 
     def seek_command(self, command_name):
         return self.commands[command_name]
@@ -52,9 +56,22 @@ class Commands(object):
         command_class.execute()
 
 
-class SaveCommand(Commands):
+class Command(object):
+    __metaclass__ = abc.ABCMeta
+
     def __init__(self, answers):
-        super(SaveCommand).__init__(answers)
+        self.answers = answers
+        self.console = Console()
+
+    @abc.abstractmethod
+    def execute(self):
+        return
+
+
+class SaveCommand(Command):
+    def __init__(self, answers, path):
+        super(SaveCommand, self).__init__(answers)
+        self.path = path
 
     def execute(self):
         self.save_to_text_file()
@@ -83,9 +100,10 @@ class SaveCommand(Commands):
             json.dump(self.answers.char_answers, text_file, indent=4)
 
 
-class LoadCommand(Commands):
-    def __init__(self, answers):
-        super(LoadCommand).__init__(answers)
+class LoadCommand(Command):
+    def __init__(self, answers, path):
+        super(LoadCommand, self).__init__(answers)
+        self.path = path
 
     def execute(self):
         self.load_from_file()
@@ -106,9 +124,9 @@ class LoadCommand(Commands):
         pprint(self.answers.char_gender_pronoun)
 
 
-class HelpCommand(Commands):
+class HelpCommand(Command):
     def __init__(self, answers):
-        super(HelpCommand).__init__(answers)
+        super(HelpCommand, self).__init__(answers)
 
     def execute(self):
         self.help_command()
@@ -145,3 +163,62 @@ class HelpCommand(Commands):
     #         print question
     #     answer = raw_input(">")
     #     return answer
+
+class ResetCommand(Command):
+    def __init__(self, answers):
+        super(ResetCommand, self).__init__(answers)
+
+    def execute(self):
+        self.reset_command()
+
+    def clear(self):
+        self.answers.char_answers = {}
+        self.answers.char_gender_pronoun = []
+
+    def reset_command(self):
+        pass
+        # start over needed. No idea how to do it without refactor.
+        # refactor - state machine? Need starting q, current q and next q
+
+
+class ChangeCommand(Command):
+    def __init__(self, answers):
+        super(ChangeCommand, self).__init__(answers)
+
+    def execute(self):
+        self.change_command()
+
+    def change_command(self):
+        param_list = []
+        for k, v in self.answers.char_answers:
+            param_list.append(k)
+        self.console.display_text("What do you wish to change? For list of current parameters type 'param-list'")
+        while True:
+            parameter = raw_input(">")
+            if parameter in param_list:
+                print "OK"
+            elif parameter == "param-list":
+                print ', '.join(param_list)
+            else:
+                self.console.display_text("No such parameter, try again.")
+
+    def get_parameter(self):
+        param_list = []
+        for k, v in self.answers.char_answers:
+            param_list.append(k)
+        self.console.display_text("What do you wish to change? For list of current parameters type 'param-list'")
+        while True:
+            parameter = raw_input(">")
+            if parameter in param_list:
+                print "OK"
+            elif parameter == "param-list":
+                print ', '.join(param_list)
+            else:
+                self.console.display_text("No such parameter, try again.")
+
+    def change_parameter_value(self, key):
+        self.console.display_text("Ok, so you wish to change %s. Current value is %s. Type in what you wish to change it to.") % (key, self.answers.char_answers[key])
+        new_value = raw_input(">")
+        # NEEDS CHANGE WITH VALIDATION!!!
+        self.answers.char_answers[key] = new_value
+        self.console.display_text("Current %s value is %s") % (key, self.answers.char_answers[key])

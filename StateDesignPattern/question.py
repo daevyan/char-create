@@ -6,12 +6,11 @@ from commands import *
 class Question(object):
     __metaclass__ = abc.ABCMeta
 
-    console = Console()
-    commands = Commands()
-
     def __init__(self, answers, validator):
         self.validator = validator
         self.answers = answers
+        self.commands = Commands(answers)
+        self.console = Console()
 
     @abc.abstractmethod
     def get_name(self):
@@ -28,19 +27,19 @@ class Question(object):
     def get_answer(self):
         while True:
             answer = self.ask_question()
-            validator = self.validator.validate(answer)
-            if validator:
-                self.answers.set_answer(self.get_name(), answer)
-                print self.answers.char_answers
-                break
-            elif not validator:
-                print self.validator.validate(answer)
-                self.console.display_text("Error!")
+            if self.commands.is_command(answer):
+                self.commands.run_command(self.answers)
                 continue
             else:
-                print "Validator value is %s" % validator
-                self.commands.run_command()
-                continue
+                is_valid = self.validator.validate(answer)
+                if is_valid:
+                    self.answers.set_answer(self.get_name(), answer)
+                    print self.answers.char_answers
+                    break
+                else:
+                    print self.validator.validate(answer)
+                    self.console.display_text("Error!")
+                    continue
 
     def ask_question(self):
         self.console.display_text(self.get_question_text())
@@ -89,33 +88,3 @@ class NameQuestion(Question):
     def get_confirmation_text(self):
         return "Ok, so let's get on with it! We'll start with %s's Looks, than go through\n" \
                "Personality, and finish with some kind of Background." % self.answers.char_answers.get("name")
-
-
-class Question655(object):
-    def __init__(self, answers, question_name, question_text, confirmation_text, validator, list_name=None):
-        self.question_name = question_name
-        self.question_text = question_text
-        self.confirmation_text = confirmation_text
-        self.validator = validator
-        self.answers = answers
-        self.list_name = list_name
-
-    console = Console()
-
-    def get_answer(self):
-        while True:
-            answer = self.ask_question()
-            if self.validator.validate(answer):
-                self.answers.set_answer(self.question_name, answer)
-                break
-            else:
-                continue
-
-    def ask_question(self):
-        self.console.display_text(self.question_text)
-        answer = self.console.get_answer()
-        return answer
-
-
-
-

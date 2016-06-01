@@ -1,18 +1,21 @@
 from console import Console
 # from answer import Answer
-# from commands import Commands
+from commands import Commands
 
 
 class Validator(object):
     def __init__(self):
         self.console = Console()
-        # self.commands = Commands()
+        self.commands = Commands()
 
     def validate(self, *params):
         pass
 
 
 class IntValidator(Validator):
+    def __init__(self):
+        super(IntValidator, self).__init__()
+
     def validate(self, value):
         if EmptyValidator().validate(value):
             try:
@@ -27,13 +30,16 @@ class IntValidator(Validator):
 
 
 class EmptyValidator(Validator):
+    def __init__(self):
+        super(EmptyValidator, self).__init__()
+
     def validate(self, value):
         if not value or value is None:
             print "Error! Empty value."
             return False
         elif CMDValidator().validate(value):
             print "It's a command, cmd will be run... eventually"
-            self.commands.run_command()
+            self.commands.run_command(answers)
         else:
             return True
 
@@ -46,10 +52,10 @@ class ListValidator(Validator):
     def validate(self, value):
         if EmptyValidator().validate(value):
             if value in self.list_name:
-                print "Value available in list!"
+                print "Value %r available in list!" % value
                 return True
             else:
-                print "Value not in list!"
+                print "Value %r not in list!" % value
                 return False
 
 
@@ -67,6 +73,8 @@ class GenderValidator(Validator):
 
 
 class AgeValidator(Validator):
+    def __init__(self,):
+        super(AgeValidator, self).__init__()
 
     def validate(self, age):
         if IntValidator().validate(age):
@@ -87,6 +95,8 @@ class AgeValidator(Validator):
 
 
 class CMDValidator(Validator):
+    def __init__(self):
+        super(CMDValidator, self).__init__()
 
     # command_texts = {
     #     "change": ["change", "rename", "modify"],
@@ -109,7 +119,3 @@ class CMDValidator(Validator):
         else:
             print "Not a command"
             return False
-    #
-    # def get_command(self, value):
-    #     if True:
-    #         pass
