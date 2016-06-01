@@ -1,5 +1,0 @@
-Character: Lucy
-gender: female
-age: 63
-name: Lucy
-stage: middle aged

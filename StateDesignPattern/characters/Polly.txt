@@ -1,6 +1,0 @@
-Character: Polly
-
-gender: female
-age: 56
-stage: middle aged
-name: Polly

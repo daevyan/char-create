@@ -1,6 +1,0 @@
-Character: Maryanne
-
-gender: female
-age: 25
-stage: a young adult
-name: Maryanne

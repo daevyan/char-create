@@ -1,5 +1,0 @@
-Character: Georgia
-gender: female
-age: 23
-name: Georgia
-stage: a young adult

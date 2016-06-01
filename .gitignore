@@ -137,3 +137,6 @@ fabric.properties
 
 .idea
 /StateDesignPattern/test.py
+/StateDesignPattern/characters
+StateDesignPattern/characters/Lally.json
+StateDesignPattern/characters/Lally.txt

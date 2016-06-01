@@ -1,5 +1,0 @@
-Character: %s
-gender: female
-age: 21
-name: Dvorakova
-stage: a young adult

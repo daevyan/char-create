@@ -28,7 +28,7 @@ class Answer(object):
 
         text_file.write("Character: %s\n\n" % self.char_answers["name"])
         for k, v in self.char_answers.iteritems():
-            if k == "gender_pronoun":
+            if k == "gender_pronoun" or k == "stage":
                 pass
             else:
                 text_file.write(k + ": " + v + "\n")
@@ -107,6 +107,10 @@ class Answer(object):
 # a.load_from_file()
 
 """omg"""
+
+a = Answer()
+print a.char_answers
+print a.char_gender_pronoun
 
 # class AnswerSaverJinja(object):
 #

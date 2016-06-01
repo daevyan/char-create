@@ -6,6 +6,7 @@ from console import Console
 class Validator(object):
     def __init__(self):
         self.console = Console()
+        # self.commands = Commands()
 
     def validate(self, *params):
         pass
@@ -32,6 +33,7 @@ class EmptyValidator(Validator):
             return False
         elif CMDValidator().validate(value):
             print "It's a command, cmd will be run... eventually"
+            self.commands.run_command()
         else:
             return True
 
@@ -98,12 +100,16 @@ class CMDValidator(Validator):
     #     "quit": ["quit"]
     # }
 
-    commands = ["change", "check", "commands", "help", "load", "repeat", "restart", "save", "quit"]
+    commands_list = ["change", "check", "commands", "help", "load", "repeat", "restart", "save", "quit"]
 
     def validate(self, value):
-        if value in self.commands:
+        if value in self.commands_list:
             print "It's a command!"
             return True
         else:
             print "Not a command"
             return False
+    #
+    # def get_command(self, value):
+    #     if True:
+    #         pass

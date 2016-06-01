@@ -1,5 +1,0 @@
-Character: July
-gender: female
-age: 23
-name: July
-stage: a young adult

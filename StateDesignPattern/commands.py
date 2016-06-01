@@ -3,17 +3,15 @@ import json
 import os
 from pprint import pprint
 
-from engine import Engine
-
 
 class Commands(object):
-    def __init__(self):
-        self.answers = Engine().answers
+    def __init__(self, answers):
+        self.answers = answers
         self.console = Console()
 
     path = "C:\Users\Anka\PycharmProjects\CharGen\StateDesignPattern\characters\\"
 
-    commands = ["change", "check", "commands", "help", "load", "pass", "repeat", "restart", "save", "quit"]
+    commands_list = ["change", "check", "commands", "help", "load", "pass", "repeat", "restart", "save", "quit"]
     command_texts = {
         "change": ["change", "rename", "modify"],   # change an answer to a chosen question
         "check": ["check", "status", "current"],    # print characters current key: value list
@@ -31,11 +29,34 @@ class Commands(object):
         "list": ["ListValidator", "GenderValidator"],
         "empty": ["EmptyValidator"]
     }
+    commands = {
+        # "change": ChangeCommand(),
+        # "check": CheckCommand(),
+        # "commands": CommandsList(),
+        "help": HelpCommand(),
+        "load": LoadCommand(),
+        # "repeat": RepeatCommand(),
+        # "restart": RestartCommand(),
+        "save": SaveCommand(),
+        # "quit": QuitCommand()
+    }
+
+    def execute(self):
+        pass
+
+    def seek_command(self, command_name):
+        return self.commands[command_name]
+
+    def run_command(self, command_name):
+        command_class = self.seek_command(command_name)
+        command_class.execute()
 
 
 class SaveCommand(Commands):
+    def __init__(self, answers):
+        super(SaveCommand).__init__(answers)
 
-    def save(self):
+    def execute(self):
         self.save_to_text_file()
         self.save_dict()
 
@@ -49,6 +70,10 @@ class SaveCommand(Commands):
                 pass
             else:
                 text_file.write(k + ": " + v + "\n")
+            if k == "gender_pronoun" or k == "stage":
+                pass
+            else:
+                text_file.write(k + ": " + v + "\n")
         text_file.close()
 
     def save_dict(self):
@@ -59,8 +84,10 @@ class SaveCommand(Commands):
 
 
 class LoadCommand(Commands):
+    def __init__(self, answers):
+        super(LoadCommand).__init__(answers)
 
-    def load(self):
+    def execute(self):
         self.load_from_file()
 
     def load_from_file(self):
@@ -80,8 +107,10 @@ class LoadCommand(Commands):
 
 
 class HelpCommand(Commands):
+    def __init__(self, answers):
+        super(HelpCommand).__init__(answers)
 
-    def help(self):
+    def execute(self):
         self.help_command()
 
     help_list_thing = {

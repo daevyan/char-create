@@ -1,5 +1,0 @@
-Character: Priscilla
-gender: female
-age: 23
-name: Priscilla
-stage: a young adult
